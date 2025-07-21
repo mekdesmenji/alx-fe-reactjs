@@ -12,6 +12,9 @@ const RecipeDetails = () => {
   return (
     <div>
       <h2>{recipe.title}</h2>
+      <p>
+        <strong>ID:</strong> {recipe.id}
+      </p>
       <p>{recipe.description}</p>
     </div>
   );
