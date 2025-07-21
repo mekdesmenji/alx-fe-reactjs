@@ -18,6 +18,7 @@
 // export default RecipeList;
 
 import React from "react";
+import { Link } from "react-router-dom";
 import useRecipeStore from "../store/recipeStore";
 
 const RecipeList = () => {
@@ -29,9 +30,16 @@ const RecipeList = () => {
         <p>No recipes found</p>
       ) : (
         filteredRecipes.map((recipe) => (
-          <div key={recipe.id}>
-            <h3>{recipe.title}</h3>
+          <div key={recipe.id} className="border p-4 mb-2 rounded">
+            <h3 className="text-lg font-bold">{recipe.title}</h3>
             <p>{recipe.description}</p>
+
+            <Link
+              to={`/recipes/${recipe.id}`}
+              className="text-blue-500 underline"
+            >
+              View Details
+            </Link>
           </div>
         ))
       )}
