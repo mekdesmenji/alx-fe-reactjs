@@ -1,49 +1,58 @@
 import { useState } from "react";
-import { fetchUserData } from "../services/githubService";
+import { fetchAdvancedUsers } from "../services/githubService";
 
 function Search() {
   const [username, setUsername] = useState("");
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [location, setLocation] = useState("");
+  const [minRepos, setMinRepos] = useState("");
+  const [results, setResults] = useState([]);
 
-  const handleSearch = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setError(false);
-    setUser(null);
-    try {
-      const data = await fetchUserData(username);
-      setUser(data);
-    } catch {
-      setError(true);
-    }
-    setLoading(false);
+    const data = await fetchAdvancedUsers(username, location, minRepos);
+    setResults(data.items);
   };
 
   return (
-    <div>
-      <form onSubmit={handleSearch}>
+    <div className="p-4">
+      <form onSubmit={handleSubmit} className="space-y-2">
         <input
-          type="text"
+          className="border p-2 w-full"
+          placeholder="Username"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Enter GitHub username"
         />
-        <button type="submit">Search</button>
+        <input
+          className="border p-2 w-full"
+          placeholder="Location"
+          value={location}
+          onChange={(e) => setLocation(e.target.value)}
+        />
+        <input
+          className="border p-2 w-full"
+          placeholder="Min Repos"
+          value={minRepos}
+          onChange={(e) => setMinRepos(e.target.value)}
+        />
+        <button className="bg-blue-500 text-white px-4 py-2 rounded">
+          Search
+        </button>
       </form>
 
-      {loading && <p>Loading...</p>}
-      {error && <p>Looks like we cant find the user</p>}
-      {user && (
-        <div>
-          <img src={user.avatar_url} alt="avatar" width="100" />
-          <p>{user.login}</p>
-          <a href={user.html_url} target="_blank">
-            View Profile
-          </a>
-        </div>
-      )}
+      <div className="mt-4">
+        {results.map((user) => (
+          <div key={user.id} className="border p-2 flex items-center space-x-4">
+            <img
+              src={user.avatar_url}
+              alt={user.login}
+              className="w-12 h-12 rounded-full"
+            />
+            <a href={user.html_url} target="_blank" rel="noopener noreferrer">
+              {user.login}
+            </a>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
