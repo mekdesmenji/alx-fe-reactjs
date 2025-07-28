@@ -1,5 +1,6 @@
 import { useState } from "react";
 import "./App.css";
+import Search from "./components/Search";
 
 function App() {
   const [search, setSearch] = useState("");
@@ -11,6 +12,7 @@ function App() {
   return (
     <div className="app-container">
       <h1>GitHub User Search</h1>
+      <Search />
       <div className="search-box">
         <input
           type="text"
