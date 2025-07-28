@@ -40,18 +40,23 @@ function Search() {
       </form>
 
       <div className="mt-4">
-        {results.map((user) => (
-          <div key={user.id} className="border p-2 flex items-center space-x-4">
-            <img
-              src={user.avatar_url}
-              alt={user.login}
-              className="w-12 h-12 rounded-full"
-            />
-            <a href={user.html_url} target="_blank" rel="noopener noreferrer">
-              {user.login}
-            </a>
-          </div>
-        ))}
+        {results &&
+          results.length > 0 &&
+          results.map((user) => (
+            <div
+              key={user.id}
+              className="border p-2 flex items-center space-x-4"
+            >
+              <img
+                src={user.avatar_url}
+                alt={user.login}
+                className="w-12 h-12 rounded-full"
+              />
+              <a href={user.html_url} target="_blank" rel="noopener noreferrer">
+                {user.login}
+              </a>
+            </div>
+          ))}
       </div>
     </div>
   );
