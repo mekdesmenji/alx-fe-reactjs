@@ -1,5 +1,8 @@
 import { Navigate } from "react-router-dom";
+import useAuth from "../hooks/useAuth";
 
-const PrivateRoute = ({ element }) => {
-  return isAuthenticated() ? element : <Navigate to="/login" />;
-};
+export default function ProtectedRoute({ element }) {
+  const { user } = useAuth();
+
+  return user ? element : <Navigate to="/login" replace />;
+}
