@@ -1,13 +1,23 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import User from "./pages/User";
+import BlogPost from "./pages/BlogPost";
+import Home from "./pages/Home"; // optional
+import Profile from "./pages/Profile";
+import Login from "./pages/Login";
+import PrivateRoute from "./components/PrivateRoute";
 
 function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/user/:userId" element={<User />} />
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
 
-        <Route path="/" element={<h1>Home</h1>} />
+        <Route
+          path="/profile/*"
+          element={<PrivateRoute element={<Profile />} />}
+        />
+
+        <Route path="/blog/:id" element={<BlogPost />} />
       </Routes>
     </Router>
   );
