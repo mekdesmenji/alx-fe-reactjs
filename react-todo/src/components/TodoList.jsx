@@ -1,5 +1,4 @@
-import { useState } from "react";
-
+import React, { useState } from "react";
 export default function TodoList() {
   const [todos, setTodos] = useState([
     { id: 1, text: "Learn React", completed: false },
@@ -42,7 +41,14 @@ export default function TodoList() {
             style={{ textDecoration: todo.completed ? "line-through" : "none" }}
           >
             {todo.text}
-            <button onClick={() => deleteTodo(todo.id)}>Delete</button>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteTodo(todo.id);
+              }}
+            >
+              Delete
+            </button>
           </li>
         ))}
       </ul>
