@@ -3,7 +3,7 @@ import {
   QueryClientProvider,
   useQuery,
 } from "@tanstack/react-query";
-import PostsComponent from "./PostsComponent";
+import PostsComponent from "./components/PostsComponent";
 
 const queryClient = new QueryClient();
 
