@@ -1,55 +1,50 @@
+import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useState } from "react";
 
-const schema = Yup.object({
-  username: Yup.string()
-    .trim()
-    .min(3, "Min 3 characters")
-    .required("Username required"),
-  email: Yup.string().email("Invalid email").required("Email required"),
-  password: Yup.string()
-    .min(6, "Min 6 characters")
-    .required("Password required"),
+const validationSchema = Yup.object({
+  username: Yup.string().required("Username is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string().required("Password is required"),
 });
 
-export default function FormikRegistrationForm() {
-  const [msg, setMsg] = useState("");
+export default function FormikForm() {
+  const handleSubmit = async (
+    values,
+    { setSubmitting, resetForm, setStatus }
+  ) => {
+    setSubmitting(true);
+    setStatus("");
+    try {
+      const res = await fetch("https://reqres.in/api/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Registration failed");
+      setStatus(`✅ Registered! Token: ${data.token}`);
+      resetForm();
+    } catch (err) {
+      setStatus(`❌ ${err.message}`);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <Formik
       initialValues={{ username: "", email: "", password: "" }}
-      validationSchema={schema}
-      onSubmit={async (values, { setSubmitting, resetForm }) => {
-        setMsg("");
-        try {
-          const res = await fetch("https://reqres.in/api/register", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              email: values.email,
-              password: values.password,
-            }),
-          });
-          const data = await res.json();
-          if (!res.ok) throw new Error(data.error || "Registration failed");
-          setMsg(`✅ Registered! Token: ${data.token}`);
-          resetForm();
-        } catch (err) {
-          setMsg(`❌ ${err.message}`);
-        } finally {
-          setSubmitting(false);
-        }
-      }}
+      validationSchema={validationSchema}
+      onSubmit={handleSubmit}
     >
-      {({ isSubmitting }) => (
-        <Form noValidate>
+      {({ isSubmitting, status }) => (
+        <Form>
           <label>Username</label>
-          <Field
-            name="username"
-            placeholder="sophia_dev"
-            disabled={isSubmitting}
-          />
+          <Field name="username" />
           <ErrorMessage
             name="username"
             component="div"
@@ -57,12 +52,7 @@ export default function FormikRegistrationForm() {
           />
 
           <label>Email</label>
-          <Field
-            type="email"
-            name="email"
-            placeholder="you@example.com"
-            disabled={isSubmitting}
-          />
+          <Field type="email" name="email" />
           <ErrorMessage
             name="email"
             component="div"
@@ -70,12 +60,7 @@ export default function FormikRegistrationForm() {
           />
 
           <label>Password</label>
-          <Field
-            type="password"
-            name="password"
-            placeholder="••••••••"
-            disabled={isSubmitting}
-          />
+          <Field type="password" name="password" />
           <ErrorMessage
             name="password"
             component="div"
@@ -86,11 +71,7 @@ export default function FormikRegistrationForm() {
             {isSubmitting ? "Submitting..." : "Register"}
           </button>
 
-          {msg && <p>{msg}</p>}
-          <p style={{ fontSize: 12, color: "#555" }}>
-            Note: Mock API <code>reqres.in</code> only accepts{" "}
-            <code>email</code> and <code>password</code>.
-          </p>
+          {status && <p>{status}</p>}
         </Form>
       )}
     </Formik>
