@@ -1,26 +1,28 @@
 import { useState } from "react";
 
 export default function RegistrationForm() {
-  const [values, setValues] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
   const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
   const onChange = (e) => {
-    setValues((v) => ({ ...v, [e.target.name]: e.target.value }));
-    setErrors((err) => ({ ...err, [e.target.name]: "" }));
+    const { name, value } = e.target;
+    if (name === "username") setUsername(value);
+    if (name === "email") setEmail(value);
+    if (name === "password") setPassword(value);
+
+    setErrors((err) => ({ ...err, [name]: "" }));
     setMsg("");
   };
 
   const validate = () => {
     const e = {};
-    if (!values.username.trim()) e.username = "Username required";
-    if (!values.email.trim()) e.email = "Email required";
-    if (!values.password.trim()) e.password = "Password required";
+    if (!username.trim()) e.username = "Username required";
+    if (!email.trim()) e.email = "Email required";
+    if (!password.trim()) e.password = "Password required";
     return e;
   };
 
@@ -32,19 +34,17 @@ export default function RegistrationForm() {
     setLoading(true);
     setMsg("");
     try {
-      // Mock API expects only email + password
       const res = await fetch("https://reqres.in/api/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          email: values.email,
-          password: values.password,
-        }),
+        body: JSON.stringify({ email, password }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Registration failed");
       setMsg(`✅ Registered! Token: ${data.token}`);
-      setValues({ username: "", email: "", password: "" });
+      setUsername("");
+      setEmail("");
+      setPassword("");
     } catch (err) {
       setMsg(`❌ ${err.message}`);
     } finally {
@@ -57,7 +57,7 @@ export default function RegistrationForm() {
       <label>Username</label>
       <input
         name="username"
-        value={values.username}
+        value={username}
         onChange={onChange}
         disabled={loading}
       />
@@ -69,7 +69,7 @@ export default function RegistrationForm() {
       <input
         type="email"
         name="email"
-        value={values.email}
+        value={email}
         onChange={onChange}
         disabled={loading}
       />
@@ -79,7 +79,7 @@ export default function RegistrationForm() {
       <input
         type="password"
         name="password"
-        value={values.password}
+        value={password}
         onChange={onChange}
         disabled={loading}
       />
@@ -90,6 +90,7 @@ export default function RegistrationForm() {
       <button type="submit" disabled={loading}>
         {loading ? "Submitting..." : "Register"}
       </button>
+
       {msg && <p>{msg}</p>}
     </form>
   );
