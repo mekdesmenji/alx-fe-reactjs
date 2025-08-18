@@ -20,9 +20,9 @@ export default function RegistrationForm() {
 
   const validate = () => {
     const e = {};
-    if (!username.trim()) e.username = "Username required";
-    if (!email.trim()) e.email = "Email required";
-    if (!password.trim()) e.password = "Password required";
+    if (!username) e.username = "Username required";
+    if (!email) e.email = "Email required";
+    if (!password) e.password = "Password required";
     return e;
   };
 
