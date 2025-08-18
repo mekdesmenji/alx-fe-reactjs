@@ -4,6 +4,7 @@ import Home from "./pages/Home"; // optional
 import Profile from "./pages/Profile";
 import Login from "./pages/Login";
 import PrivateRoute from "./components/PrivateRoute";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
@@ -19,6 +20,11 @@ function App() {
 
         <Route path="/blog/:id" element={<BlogPost />} />
       </Routes>
+
+      <Route
+        path="/profile"
+        element={<ProtectedRoute element={<Profile />} />}
+      />
     </Router>
   );
 }
